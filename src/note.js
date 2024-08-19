@@ -21,9 +21,16 @@ export class Note {
 
   deleteNote = () => {};
 
-  getNotes = () => {};
+  getNotes = async () => {
+    const notes = await db.allNotes();
+    return notes;
+  };
 
-  getNotesById = () => {};
+  getNotesById = async (id) => {
+    const notes = await this.getNotes();
+    const note = notes.find((note) => note.id === id);
+    return note;
+  };
 
   clearNotes = () => {};
 }

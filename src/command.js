@@ -17,7 +17,9 @@ yargs(hideBin(process.argv))
     "get matching note",
     () => {},
     (args) => {
-      console.log(args);
+      // console.log(args);
+      // note.find(args.filter);
+      note.getNotesById(args.filter);
     }
   )
   .command(
@@ -48,7 +50,8 @@ yargs(hideBin(process.argv))
     "get all notes",
     () => {},
     (args) => {
-      console.log(args);
+      // console.log(args);
+      note.getNotes();
     }
   )
   .command(
