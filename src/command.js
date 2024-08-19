@@ -27,10 +27,7 @@ yargs(hideBin(process.argv))
     "remove a note by id",
     () => {},
     (args) => {
-      const noteObj = {
-        id: args.id,
-      };
-      note.updateNote({});
+      note.deleteNoteById(args.id);
     }
   )
   .command(
@@ -59,7 +56,8 @@ yargs(hideBin(process.argv))
     "removes all note",
     () => {},
     (args) => {
-      console.log(args);
+      // console.log(args);
+      note.clearNotes();
     }
   )
   .demandCommand(1)

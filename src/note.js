@@ -19,10 +19,23 @@ export class Note {
     db.update(noteObj);
   };
 
-  deleteNote = () => {};
+  deleteNoteById = async (id) => {
+    try {
+      const notes = await db.allNotes();
+
+      const updatedNotes = notes.filter((note) => note.id !== id);
+
+      await db.save(updatedNotes);
+
+      console.log(`Note with id ${id} has been deleted.`);
+    } catch (error) {
+      console.error("Error deleting note:", error);
+    }
+  };
 
   getNotes = async () => {
     const notes = await db.allNotes();
+    console.log(notes);
     return notes;
   };
 
@@ -32,5 +45,13 @@ export class Note {
     return note;
   };
 
-  clearNotes = () => {};
+  clearNotes = async () => {
+    try {
+      // Clear notes by saving an empty array to the file
+      await db.save([]);
+      console.log("All notes have been cleared.");
+    } catch (error) {
+      console.error("Error clearing notes:", error);
+    }
+  };
 }
