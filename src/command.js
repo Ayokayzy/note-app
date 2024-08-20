@@ -17,7 +17,9 @@ yargs(hideBin(process.argv))
     "get matching note",
     () => {},
     (args) => {
-      console.log(args);
+      // console.log(args);
+      // note.find(args.filter);
+      note.getNotesById(args.filter);
     }
   )
   .command(
@@ -25,10 +27,7 @@ yargs(hideBin(process.argv))
     "remove a note by id",
     () => {},
     (args) => {
-      const noteObj = {
-        id: args.id,
-      };
-      note.updateNote({});
+      note.deleteNoteById(args.id);
     }
   )
   .command(
@@ -48,7 +47,8 @@ yargs(hideBin(process.argv))
     "get all notes",
     () => {},
     (args) => {
-      console.log(args);
+      // console.log(args);
+      note.getNotes();
     }
   )
   .command(
@@ -56,7 +56,8 @@ yargs(hideBin(process.argv))
     "removes all note",
     () => {},
     (args) => {
-      console.log(args);
+      // console.log(args);
+      note.clearNotes();
     }
   )
   .demandCommand(1)

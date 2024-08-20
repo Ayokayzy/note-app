@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-
+import { promises as fsPromises } from "fs";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -16,17 +16,25 @@ export class Db {
   }
 
   async allNotes() {
-    fs.readFile(this.filePath, (error, notes) => {
-      if (error) {
-        console.log(error, "all note error");
-        return {
-          error,
-        };
-      }
-      const noteObject = JSON.parse(notes);
-      console.log({ filepath: noteObject.notes });
-      return noteObject["notes"];
-    });
+    // fs.readFile(this.filePath, (error, notes) => {
+    //   if (error) {
+    //     console.log(error, "all note error");
+    //     return [];
+    //     // console.log(error)
+    //     // error,
+    //   }
+    //   const noteObject = notes ? JSON.parse(notes) : { notes: [] };
+    //   // console.log({ filepath: noteObject["notes"] }, "hjhjhjhjh");
+    //   return noteObject["notes"];
+    // });
+    try {
+      const notesData = await fsPromises.readFile(this.filePath, "utf-8");
+      const noteObject = notesData ? JSON.parse(notesData) : { notes: [] };
+      return noteObject["notes"]; // Return the notes array
+    } catch (error) {
+      console.log(error, "Error fetching notes");
+      return []; // Return an empty array in case of an error
+    }
   }
 
   update(noteObj) {
@@ -37,14 +45,10 @@ export class Db {
           error,
         };
       }
-      const noteObject = JSON.parse(notes);
-      console.log({ filepath: noteObject.notes });
+      const noteObject = notes ? JSON.parse(notes) : { notes: [] };
+      // console.log({ filepath: noteObject.notes });
       const allNotes = noteObject.notes;
-      // [1, 2, 3, 4, 5] // 6
-      // [1, 2, 6, 4, 5]
-      // const foundIndex = allNotes.findIndex((item) => item.id === noteObj.id);
-      // const foundNote = allNotes.find((item) => item.id === noteObj.id);
-      // allNotes.splice(foundIndex, 1, foundNote);
+
       const newNotes = allNotes.map((note) => {
         if (noteObj.id === note.id) {
           return noteObj;
@@ -52,14 +56,12 @@ export class Db {
           return note;
         }
       });
-      console.log({ newNotes });
+      console.log({ newNotes }, "note updated successfully");
       this.save(newNotes);
     });
   }
 
   async new(newNote) {
-    console.log("in new note");
-
     fs.readFile(this.filePath, "utf-8", (error, notes) => {
       if (error) {
         console.log(error, "all note error");
@@ -67,12 +69,30 @@ export class Db {
           error,
         };
       }
-      const noteObject = JSON.parse(notes);
-      console.log({ filepath: noteObject.notes });
+      const noteObject = notes ? JSON.parse(notes) : { notes: [] };
+
       noteObject.notes.push(newNote);
-      this.save(noteObject);
+      this.save(noteObject.notes);
+      console.log("new note created");
     });
   }
+  // async find(newNote) {
+  //   fs.readFile(this.filePath, "utf-8", (error, notes) => {
+  //     if (error) {
+  //       console.log(error, "all note error");
+  //       return {
+  //         error,
+  //       };
+  //     }
+  //     const noteObject = notes ? JSON.parse(notes) : { notes: [] };
+
+  //     console.log(noteObject, newNote,'find')
+
+  //     // noteObject.notes.push(newNote);
+  //     // this.save(noteObject.notes);
+  //     // console.log("new note created");
+  //   });
+  // }
 
   async save(notes) {
     fs.writeFile(this.filePath, JSON.stringify({ notes }), "utf-8", (error) => {
@@ -110,46 +130,3 @@ export class Db {
     });
   }
 }
-
-class Person {
-  name = "";
-  age = "";
-
-  walk() {}
-
-  run() {}
-
-  talk() {}
-
-  eat() {}
-}
-
-class Car {
-  color = "";
-  model = "";
-
-  constructor(color, model) {
-    this.color = color;
-    this.model = model;
-  }
-
-  move() {}
-
-  honk() {}
-}
-
-const person1 = new Person();
-
-const person2 = new Person();
-
-const toyotaCamry2020 = new Car("black", 2020);
-// console.log(toyotaCamry2020.color);
-
-const toyotaCamry2021 = new Car("red", 2021);
-// console.log(toyotaCamry2021.color);
-
-function myFunction() {}
-
-const myFun = function () {};
-
-const myFunc = () => {};
